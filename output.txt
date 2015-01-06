@@ -53,3 +53,20 @@ ubuntu@ubuntu:~/devstack$ ceilometer sample-list -m storage.objects.size
 | f2f181e5b8d14d279ee05e47ccfb2de5 | storage.objects.size | gauge | 0.0     | B    | 2015-01-06T12:04:35 |
 | fcf9de64f3c145dcaaf605a15806a80d | storage.objects.size | gauge | 0.0     | B    | 2015-01-06T12:04:35 |
 +----------------------------------+----------------------+-------+---------+------+---------------------+
+ubuntu@ubuntu:~/devstack$ ceilometer sample-list -m storage.objects
++----------------------------------+-----------------+-------+--------+--------+---------------------+
+| Resource ID                      | Name            | Type  | Volume | Unit   | Timestamp           |
++----------------------------------+-----------------+-------+--------+--------+---------------------+
+| 1737d151dad04ab2a707d6dc3056f876 | storage.objects | gauge | 0.0    | object | 2015-01-06T12:14:35 |
+| 28e604d987c849bb81778813d4e0d7ea | storage.objects | gauge | 0.0    | object | 2015-01-06T12:14:35 |
+| 30c153d9160c4c8d8a414abace4bccae | storage.objects | gauge | 0.0    | object | 2015-01-06T12:14:35 |
+| 49a7022681a345769553d635506f7c7f | storage.objects | gauge | 0.0    | object | 2015-01-06T12:14:35 |
+| f2f181e5b8d14d279ee05e47ccfb2de5 | storage.objects | gauge | 0.0    | object | 2015-01-06T12:14:35 |
+| fcf9de64f3c145dcaaf605a15806a80d | storage.objects | gauge | 4.0    | object | 2015-01-06T12:14:35 |
+| 1737d151dad04ab2a707d6dc3056f876 | storage.objects | gauge | 0.0    | object | 2015-01-06T12:04:36 |
+| 28e604d987c849bb81778813d4e0d7ea | storage.objects | gauge | 0.0    | object | 2015-01-06T12:04:36 |
+| 30c153d9160c4c8d8a414abace4bccae | storage.objects | gauge | 0.0    | object | 2015-01-06T12:04:36 |
+| 49a7022681a345769553d635506f7c7f | storage.objects | gauge | 0.0    | object | 2015-01-06T12:04:36 |
+| f2f181e5b8d14d279ee05e47ccfb2de5 | storage.objects | gauge | 0.0    | object | 2015-01-06T12:04:36 |
+| fcf9de64f3c145dcaaf605a15806a80d | storage.objects | gauge | 0.0    | object | 2015-01-06T12:04:36 |
++----------------------------------+-----------------+-------+--------+--------+---------------------+
