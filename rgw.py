@@ -24,18 +24,18 @@ class RGWAdminOp(object):
         self.secret = secret
         self.host = host
         self.protocol = "https" if secure else "http"
-        self.endpoint = "{protocol}//{host}/admin".format(self.protocol,
-                                                          host=host)
+        self.endpoint = "{0}://{1}/admin".format(self.protocol, host)
 
     def get_bucket_stats(self, tenant_id):
         METHOD = "bucket"
-        r = requests.get("{endpoint}/{method}".format(self.endpoint, METHOD),
+        r = requests.get("{0}/{1}".format(self.endpoint, METHOD),
                          params={"uid": tenant_id, "stats": True},
                          auth=S3Auth(self.access_key, self.secret, self.host)
                          )
 
         stats = RGWStats(tenant_id)
         stats.buckets = [b for b in self.iter_bucket_stats(r.json())]
+        return stats
 
     @staticmethod
     def iter_bucket_stats(json_data):
