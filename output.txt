@@ -1,0 +1,55 @@
+ubuntu@ubuntu:~/devstack$ ceilometer sample-list -m storage.api.request
++----------------------------------+---------------------+-------+--------+---------+----------------------------+
+| Resource ID                      | Name                | Type  | Volume | Unit    | Timestamp                  |
++----------------------------------+---------------------+-------+--------+---------+----------------------------+
+| fcf9de64f3c145dcaaf605a15806a80d | storage.api.request | delta | 1.0    | request | 2015-01-06T12:13:13.246070 |
+| fcf9de64f3c145dcaaf605a15806a80d | storage.api.request | delta | 1.0    | request | 2015-01-06T12:13:13.199363 |
+| fcf9de64f3c145dcaaf605a15806a80d | storage.api.request | delta | 1.0    | request | 2015-01-06T12:13:13.014750 |
+| fcf9de64f3c145dcaaf605a15806a80d | storage.api.request | delta | 1.0    | request | 2015-01-06T12:13:07.914061 |
+| fcf9de64f3c145dcaaf605a15806a80d | storage.api.request | delta | 1.0    | request | 2015-01-06T12:13:07.892369 |
+| fcf9de64f3c145dcaaf605a15806a80d | storage.api.request | delta | 1.0    | request | 2015-01-06T12:13:07.694511 |
+| fcf9de64f3c145dcaaf605a15806a80d | storage.api.request | delta | 1.0    | request | 2015-01-06T12:12:54.289772 |
+| fcf9de64f3c145dcaaf605a15806a80d | storage.api.request | delta | 1.0    | request | 2015-01-06T12:12:54.264493 |
+| fcf9de64f3c145dcaaf605a15806a80d | storage.api.request | delta | 1.0    | request | 2015-01-06T12:12:54.094160 |
+| fcf9de64f3c145dcaaf605a15806a80d | storage.api.request | delta | 1.0    | request | 2015-01-06T12:12:50.030188 |
+| fcf9de64f3c145dcaaf605a15806a80d | storage.api.request | delta | 1.0    | request | 2015-01-06T12:12:34.489171 |
+| fcf9de64f3c145dcaaf605a15806a80d | storage.api.request | delta | 1.0    | request | 2015-01-06T12:12:34.461873 |
+| fcf9de64f3c145dcaaf605a15806a80d | storage.api.request | delta | 1.0    | request | 2015-01-06T12:12:34.247960 |
+| fcf9de64f3c145dcaaf605a15806a80d | storage.api.request | delta | 1.0    | request | 2015-01-06T12:12:25.224981 |
+| fcf9de64f3c145dcaaf605a15806a80d | storage.api.request | delta | 1.0    | request | 2015-01-06T12:12:25.114582 |
+| fcf9de64f3c145dcaaf605a15806a80d | storage.api.request | delta | 1.0    | request | 2015-01-06T12:12:24.889585 |
+| fcf9de64f3c145dcaaf605a15806a80d | storage.api.request | delta | 1.0    | request | 2015-01-06T12:05:29.645125 |
+| fcf9de64f3c145dcaaf605a15806a80d | storage.api.request | delta | 1.0    | request | 2015-01-06T12:05:29.593965 |
+| fcf9de64f3c145dcaaf605a15806a80d | storage.api.request | delta | 1.0    | request | 2015-01-06T12:05:29.191516 |
++----------------------------------+---------------------+-------+--------+---------+----------------------------+
+ubuntu@ubuntu:~/devstack$ ceilometer sample-list -m storage.containers.objects
++------------------------------------------+----------------------------+-------+--------+--------+---------------------+
+| Resource ID                              | Name                       | Type  | Volume | Unit   | Timestamp           |
++------------------------------------------+----------------------------+-------+--------+--------+---------------------+
+| fcf9de64f3c145dcaaf605a15806a80d/another | storage.containers.objects | gauge | 1.0    | object | 2015-01-06T12:14:36 |
+| fcf9de64f3c145dcaaf605a15806a80d/foo     | storage.containers.objects | gauge | 3.0    | object | 2015-01-06T12:14:36 |
++------------------------------------------+----------------------------+-------+--------+--------+---------------------+
+ubuntu@ubuntu:~/devstack$ ceilometer sample-list -m storage.containers.objects.size
++------------------------------------------+---------------------------------+-------+---------+------+---------------------+
+| Resource ID                              | Name                            | Type  | Volume  | Unit | Timestamp           |
++------------------------------------------+---------------------------------+-------+---------+------+---------------------+
+| fcf9de64f3c145dcaaf605a15806a80d/another | storage.containers.objects.size | gauge | 16484.0 | B    | 2015-01-06T12:14:35 |
+| fcf9de64f3c145dcaaf605a15806a80d/foo     | storage.containers.objects.size | gauge | 27608.0 | B    | 2015-01-06T12:14:35 |
++------------------------------------------+---------------------------------+-------+---------+------+---------------------+
+ubuntu@ubuntu:~/devstack$ ceilometer sample-list -m storage.objects.size
++----------------------------------+----------------------+-------+---------+------+---------------------+
+| Resource ID                      | Name                 | Type  | Volume  | Unit | Timestamp           |
++----------------------------------+----------------------+-------+---------+------+---------------------+
+| 1737d151dad04ab2a707d6dc3056f876 | storage.objects.size | gauge | 0.0     | B    | 2015-01-06T12:14:35 |
+| 28e604d987c849bb81778813d4e0d7ea | storage.objects.size | gauge | 0.0     | B    | 2015-01-06T12:14:35 |
+| 30c153d9160c4c8d8a414abace4bccae | storage.objects.size | gauge | 0.0     | B    | 2015-01-06T12:14:35 |
+| 49a7022681a345769553d635506f7c7f | storage.objects.size | gauge | 0.0     | B    | 2015-01-06T12:14:35 |
+| f2f181e5b8d14d279ee05e47ccfb2de5 | storage.objects.size | gauge | 0.0     | B    | 2015-01-06T12:14:35 |
+| fcf9de64f3c145dcaaf605a15806a80d | storage.objects.size | gauge | 44092.0 | B    | 2015-01-06T12:14:35 |
+| 1737d151dad04ab2a707d6dc3056f876 | storage.objects.size | gauge | 0.0     | B    | 2015-01-06T12:04:35 |
+| 28e604d987c849bb81778813d4e0d7ea | storage.objects.size | gauge | 0.0     | B    | 2015-01-06T12:04:35 |
+| 30c153d9160c4c8d8a414abace4bccae | storage.objects.size | gauge | 0.0     | B    | 2015-01-06T12:04:35 |
+| 49a7022681a345769553d635506f7c7f | storage.objects.size | gauge | 0.0     | B    | 2015-01-06T12:04:35 |
+| f2f181e5b8d14d279ee05e47ccfb2de5 | storage.objects.size | gauge | 0.0     | B    | 2015-01-06T12:04:35 |
+| fcf9de64f3c145dcaaf605a15806a80d | storage.objects.size | gauge | 0.0     | B    | 2015-01-06T12:04:35 |
++----------------------------------+----------------------+-------+---------+------+---------------------+
