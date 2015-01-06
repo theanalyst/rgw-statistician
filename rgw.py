@@ -1,24 +1,11 @@
-class RGWBucket(object):
-    def __init__(self, bucket_name):
+class RGWStats(object):
+    def __init__(self, user_id):
         """
-        Basic container to hold a bucket data
+        Container holding some stats per user
         """
-        self.bucket_name = bucket_name
+        self.api_requests = 0
+        self.num_buckets = 0
         self.num_objects = 0
-        self.size = 0
+        self.uid = user_id
+        self.buckets = []
 
-    @property
-    def size(self):
-        return self.size
-
-    @size.setter
-    def size(self, value):
-        self.size = value
-
-    @property
-    def num_objects(self):
-        return self.num_objects
-
-    @num_objects.setter
-    def num_objects(self, value):
-        self.num_objects = value
