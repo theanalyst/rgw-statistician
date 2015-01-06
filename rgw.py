@@ -1,3 +1,4 @@
+import os
 import requests
 from awsauth import S3Auth
 from collections import namedtuple
@@ -46,3 +47,13 @@ class RGWAdminOp(object):
                 yield Bucket(it["bucket"], v["num_objects"], v["size_kb"])
             else:
                 yield Bucket(it["bucket"], 0, 0)
+
+
+if __name__ == "__main__":
+    akey = os.getenv('S3_ACCESS_KEY_ID')
+    skey = os.getenv('S3_SECRET_ACCESS_KEY')
+    s3host = os.getenv('S3_HOSTNAME')
+
+    admin = RGWAdminOp(s3host, akey, skey, secure=False)
+    stats = admin.get_bucket_stats("admin")
+    print stats.buckets
