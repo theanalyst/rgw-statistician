@@ -38,6 +38,15 @@ class RGWAdminOp(object):
         stats.buckets = [b for b in self.iter_bucket_stats(r.json())]
         return stats
 
+    def get_usage_stats(self, tenant_id):
+        METHOD = "usage"
+        r = requests.get("{0}/{1}".format(self.endpoint, METHOD),
+                         params={"uid": tenant_id},
+                         auth=S3Auth(self.access_key, self.secret, self.host)
+                         )
+        print r.json()
+
+
     @staticmethod
     def iter_bucket_stats(json_data):
         # TODO: handle failures
@@ -57,3 +66,4 @@ if __name__ == "__main__":
     admin = RGWAdminOp(s3host, akey, skey, secure=False)
     stats = admin.get_bucket_stats("admin")
     print stats.buckets
+    admin.get_usage_stats("admin")
