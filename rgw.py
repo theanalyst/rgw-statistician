@@ -9,11 +9,21 @@ class RGWStats(object):
         """
         Container holding some stats per user
         """
-        self.api_requests = 0
-        self.num_buckets = 0
-        self.num_objects = 0
         self.uid = user_id
-        self.buckets = []
+        self._api_requests = 0
+        self._num_buckets = 0
+        self._num_objects = 0
+        self._buckets = []
+        self._size = 0
+
+
+def iter_bucket_stats(bucket_json):
+    Bucket = namedtuple('Bucket', 'name, num_objects, size')
+    for it in bucket_json:
+        for k, v in it["usage"].items():
+            yield Bucket(it["bucket"], v["num_objects"], v["size_kb"])
+        else:
+            yield Bucket(it["bucket"], 0, 0)
 
 
 class RGWAdminOp(object):
