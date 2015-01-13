@@ -18,9 +18,10 @@ class RGWStats(object):
         self._size = 0
 
     def __repr__(self):
-        return "<Stats uid={0} api_req={1} n_cont={2} n_obj={3} size={4}>".format(
-        self.uid, self._api_requests, self._num_buckets,
-        self._num_objects, self._size)
+        return "<Stats uid={0} api_reqs={1} n_buckets={2}" \
+            "n_obj={3} size={4}>".format(self.uid, self._api_requests,
+                                         self._num_buckets, self._num_objects,
+                                         self._size)
 
 class RGWAdminOp(object):
     def __init__(self, host, access_key, secret, secure=True):
