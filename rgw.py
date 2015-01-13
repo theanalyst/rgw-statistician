@@ -44,8 +44,7 @@ class RGWAdminOp(object):
                          auth=S3Auth(self.access_key, self.secret, self.host)
                          )
 
-        stats = RGWStats(tenant_id)
-        stats.buckets = [b for b in self.iter_bucket_stats(r.json())]
+        stats = self._process_bucket_stats(r.json(), tenant_id)
         return stats
 
     def get_usage_stats(self, tenant_id):
@@ -57,14 +56,21 @@ class RGWAdminOp(object):
         return list(self.iter_usage_stats(r.json()))
 
     @staticmethod
-    def iter_bucket_stats(json_data):
-        # TODO: handle failures
+    def _process_bucket_stats(json_data, tenant_id):
+        stats = RGWStats(tenant_id)
         Bucket = namedtuple('Bucket', 'name, num_objects, size')
         for it in json_data:
             for k, v in it["usage"].items():
-                yield Bucket(it["bucket"], v["num_objects"], v["size_kb"])
+                stats._num_buckets += 1
+                stats._num_objects += v["num_objects"]
+                stats._size += v["size_kb"]
+                stats.buckets.append(Bucket(it["bucket"], v["num_objects"],
+                                            v["size_kb"]))
             else:
-                yield Bucket(it["bucket"], 0, 0)
+                stats.buckets.append(Bucket(it["bucket"], 0, 0))
+                stats._num_buckets += 1
+
+        return stats
 
     def iter_usage_stats(user_data):
         Usage = namedtuple('Usage', 'api, s_bytes, r_bytes, ops, success_ops')
