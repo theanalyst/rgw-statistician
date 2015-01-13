@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import os
 import requests
 from awsauth import S3Auth
