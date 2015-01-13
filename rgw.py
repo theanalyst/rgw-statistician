@@ -73,6 +73,7 @@ class RGWAdminOp(object):
 
         return stats
 
+    @staticmethod
     def iter_usage_stats(user_data):
         Usage = namedtuple('Usage', 'api, s_bytes, r_bytes, ops, success_ops')
         usage_data = user_data["summary"][0]["categories"]
