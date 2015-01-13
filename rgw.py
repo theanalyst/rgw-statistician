@@ -18,15 +18,6 @@ class RGWStats(object):
         self._size = 0
 
 
-def iter_bucket_stats(bucket_json):
-    Bucket = namedtuple('Bucket', 'name, num_objects, size')
-    for it in bucket_json:
-        for k, v in it["usage"].items():
-            yield Bucket(it["bucket"], v["num_objects"], v["size_kb"])
-        else:
-            yield Bucket(it["bucket"], 0, 0)
-
-
 class RGWAdminOp(object):
     def __init__(self, host, access_key, secret, secure=True):
         """
