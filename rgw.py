@@ -14,7 +14,7 @@ class RGWStats(object):
         self._api_requests = 0
         self._num_buckets = 0
         self._num_objects = 0
-        self._buckets = []
+        self.buckets = []
         self._size = 0
 
 
