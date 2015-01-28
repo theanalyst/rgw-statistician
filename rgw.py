@@ -76,7 +76,7 @@ if __name__ == "__main__":
     skey = os.getenv('S3_SECRET_ACCESS_KEY')
     s3host = 'http://127.0.0.1:8080/admin'
 
-    admin = RGWAdminClient(s3host, akey, skey, secure=False)
+    admin = RGWAdminClient(s3host, akey, skey)
     stats = admin.get_bucket("admin")
     import pprint
     pp = pprint.PrettyPrinter()
