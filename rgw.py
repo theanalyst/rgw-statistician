@@ -3,6 +3,7 @@ import os
 import requests
 from awsauth import S3Auth
 from collections import namedtuple
+import six.moves.urllib.parse as urlparse
 
 
 class RGWStats(object):
@@ -23,71 +24,63 @@ class RGWStats(object):
                                          self._num_buckets, self._num_objects,
                                          self._size)
 
-class RGWAdminOp(object):
-    def __init__(self, host, access_key, secret, secure=True):
-        """
-        Basic class holding the admin details
-        """
+
+class RGWAdminClient(object):
+    def __init__(self, endpoint, access_key, secret_key):
         self.access_key = access_key
-        self.secret = secret
-        self.host = host
-        self.protocol = "https" if secure else "http"
-        self.endpoint = "{0}://{1}/admin".format(self.protocol, host)
+        self.secret = secret_key
+        self.endpoint = endpoint
+        self.hostname = urlparse.urlparse(endpoint).netloc
 
-    def get_bucket_stats(self, tenant_id):
+    def get_bucket(self, tenant_id):
         METHOD = "bucket"
-        r = requests.get("{0}/{1}".format(self.endpoint, METHOD),
-                         params={"uid": tenant_id, "stats": True},
-                         auth=S3Auth(self.access_key, self.secret, self.host)
+        uri = "{0}/{1}".format(self.endpoint, METHOD)
+        r = requests.get(uri, params={"uid": tenant_id, "stats": True},
+                         auth=S3Auth(self.access_key, self.secret,
+                                     self.hostname)
                          )
-
         stats = self._process_bucket_stats(r.json(), tenant_id)
         return stats
 
-    def get_usage_stats(self, tenant_id):
+    def get_usage(self, tenant_id):
         METHOD = "usage"
         r = requests.get("{0}/{1}".format(self.endpoint, METHOD),
                          params={"uid": tenant_id},
-                         auth=S3Auth(self.access_key, self.secret, self.host)
+                         auth=S3Auth(self.access_key, self.secret,
+                                     self.hostname)
                          )
-        return list(self.iter_usage_stats(r.json()))
+        return self._process_usage_stats(r.json())
 
     @staticmethod
     def _process_bucket_stats(json_data, tenant_id):
         stats = RGWStats(tenant_id)
         Bucket = namedtuple('Bucket', 'name, num_objects, size')
+        stats._num_buckets = len(json_data)
         for it in json_data:
             for k, v in it["usage"].items():
-                stats._num_buckets += 1
                 stats._num_objects += v["num_objects"]
                 stats._size += v["size_kb"]
                 stats.buckets.append(Bucket(it["bucket"], v["num_objects"],
                                             v["size_kb"]))
-            else:
-                stats.buckets.append(Bucket(it["bucket"], 0, 0))
-                stats._num_buckets += 1
 
         return stats
 
     @staticmethod
-    def iter_usage_stats(user_data):
-        Usage = namedtuple('Usage', 'api, s_bytes, r_bytes, ops, success_ops')
-        usage_data = user_data["summary"][0]["categories"]
-        for it in usage_data:
-            yield Usage(it["category"], it["bytes_sent"], it["bytes_received"],
-                        it["ops"], it["successful_ops"])
+    def _process_usage_stats(json_data):
+        usage_data = json_data["summary"]
+        return sum((it["total"]["successful_ops"] for it in usage_data))
 
 
 if __name__ == "__main__":
     akey = os.getenv('S3_ACCESS_KEY_ID')
     skey = os.getenv('S3_SECRET_ACCESS_KEY')
-    s3host = os.getenv('S3_HOSTNAME')
+    s3host = 'http://127.0.0.1:8080/admin'
 
-    admin = RGWAdminOp(s3host, akey, skey, secure=False)
-    stats = admin.get_bucket_stats("admin")
+    admin = RGWAdminClient(s3host, akey, skey, secure=False)
+    stats = admin.get_bucket("admin")
     import pprint
     pp = pprint.PrettyPrinter()
 
     pp.pprint(stats)
     pp.pprint(stats.buckets)
-    pp.pprint(admin.get_usage_stats("admin"))
+    pp.pprint(admin.get_usage("admin"))
