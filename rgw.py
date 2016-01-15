@@ -13,24 +13,21 @@ class RGWAdminClient(object):
         self.endpoint = endpoint
         self.hostname = urlparse.urlparse(endpoint).netloc
 
+    def get_method(self, method, params):
+        uri = "{0}/{1}".format(self.endpoint, method)
+        r = requests.get(uri, params=params,
+                         auth=S3Auth(self.access_key, self.secret, self.hostname))
+        return r.json()
+
     def get_bucket(self, tenant_id):
-        METHOD = "bucket"
-        uri = "{0}/{1}".format(self.endpoint, METHOD)
-        r = requests.get(uri, params={"uid": tenant_id, "stats": True},
-                         auth=S3Auth(self.access_key, self.secret,
-                                     self.hostname)
-                         )
-        stats = self._process_bucket_stats(r.json(), tenant_id)
-        return stats
+        params={"uid": tenant_id, "stats": True}
+        stats_json = self.get_method("bucket", params)
+        return self._process_bucket_stats(stats_json, tenant_id)
 
     def get_usage(self, tenant_id):
-        METHOD = "usage"
-        r = requests.get("{0}/{1}".format(self.endpoint, METHOD),
-                         params={"uid": tenant_id},
-                         auth=S3Auth(self.access_key, self.secret,
-                                     self.hostname)
-                         )
-        return self._process_usage_stats(r.json())
+        params={"uid": tenant_id}
+        usage_json = self.get_method("usage", params)
+        return self._process_usage_stats(usage_json)
 
     @staticmethod
     def _process_bucket_stats(json_data, tenant_id):
