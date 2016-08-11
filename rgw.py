@@ -37,6 +37,7 @@ class RGWAdminClient(object):
         return self.get_method("bucket", params)
 
     def get_usage(self, user_id):
+        # Only works if usage is enabled in conf
         params={"uid": user_id}
         return self.get_method("usage", params)
 
