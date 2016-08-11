@@ -38,6 +38,8 @@ class RGWAdminClient(object):
 
     def get_usage(self, user_id):
         # Only works if usage is enabled in conf
+        # Otherwise you'll always get empty stats here
+
         params={"uid": user_id}
         return self.get_method("usage", params)
 
@@ -67,3 +69,7 @@ if __name__ == "__main__":
 
     print("\nbucket stats")
     pp.pprint(admin.get_bucket(args.uid, args.bucket))
+
+    print("\nusage stats")
+    pp.pprint(admin.get_usage(args.uid))
+
