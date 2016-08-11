@@ -43,6 +43,13 @@ class RGWAdminClient(object):
         params={"uid": user_id}
         return self.get_method("usage", params)
 
+    def get_bucket_policy(self, user_id, bucket):
+        params = {"uid" : user_id, "bucket" : bucket, "policy": True}
+        return self.get_method("bucket", params)
+
+    def get_quota(self, user_id):
+        params = {"uid": user_id, "quota":True}
+        return self.get_method("user",params)
 
 if __name__ == "__main__":
 
@@ -73,3 +80,5 @@ if __name__ == "__main__":
     print("\nusage stats")
     pp.pprint(admin.get_usage(args.uid))
 
+    print("\nQuotas")
+    pp.pprint(admin.get_quota(args.uid))
