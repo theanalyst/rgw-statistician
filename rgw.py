@@ -1,17 +1,23 @@
 #!/usr/bin/env python
+from __future__ import print_function
+
 import os
+import pprint
 import requests
+import argparse
+
 from awsauth import S3Auth
 from collections import namedtuple
+
 import six.moves.urllib.parse as urlparse
 
 
 class RGWAdminClient(object):
-    def __init__(self, endpoint, access_key, secret_key):
+    def __init__(self, host, access_key, secret_key):
         self.access_key = access_key
         self.secret = secret_key
-        self.endpoint = endpoint
-        self.hostname = urlparse.urlparse(endpoint).netloc
+        self.endpoint = host + "/admin"
+        self.hostname = urlparse.urlparse(host).netloc
 
     def get_method(self, method, params):
         uri = "{0}/{1}".format(self.endpoint, method)
@@ -19,46 +25,44 @@ class RGWAdminClient(object):
                          auth=S3Auth(self.access_key, self.secret, self.hostname))
         return r.json()
 
-    def get_bucket(self, tenant_id):
-        params={"uid": tenant_id, "stats": True}
-        stats_json = self.get_method("bucket", params)
-        return self._process_bucket_stats(stats_json, tenant_id)
+    def get_user(self, user_id):
+        params={"uid":user_id}
+        # TODO: redact keys from output
+        return self.get_method("user", params)
 
-    def get_usage(self, tenant_id):
-        params={"uid": tenant_id}
-        usage_json = self.get_method("usage", params)
-        return self._process_usage_stats(usage_json)
+    def get_bucket(self, user_id, bucket):
+        params={"uid": user_id, "stats": True}
+        if bucket is not None:
+            params["bucket"]=bucket
+        return self.get_method("bucket", params)
 
-    @staticmethod
-    def _process_bucket_stats(json_data, tenant_id):
-        stats = {'num_buckets': 0, 'buckets': [], 'size': 0, 'num_objects': 0}
-        Bucket = namedtuple('Bucket', 'name, num_objects, size')
-        stats['num_buckets'] = len(json_data)
-        for it in json_data:
-            for k, v in it["usage"].items():
-                stats['num_objects'] += v["num_objects"]
-                stats['size'] += v["size_kb"]
-                stats['buckets'].append(Bucket(it["bucket"], v["num_objects"],
-                                               v["size_kb"]))
-
-        return stats
-
-    @staticmethod
-    def _process_usage_stats(json_data):
-        usage_data = json_data["summary"]
-        return sum((it["total"]["successful_ops"] for it in usage_data))
+    def get_usage(self, user_id):
+        params={"uid": user_id}
+        return self.get_method("usage", params)
 
 
 if __name__ == "__main__":
-    akey = os.getenv('S3_ACCESS_KEY_ID')
-    skey = os.getenv('S3_SECRET_ACCESS_KEY')
-    s3host = 'http://127.0.0.1:8080/admin'
 
-    admin = RGWAdminClient(s3host, akey, skey)
-    stats = admin.get_bucket("admin")
-    import pprint
+    parser = argparse.ArgumentParser(description='get rgw statistics using a RESTful api')
+    parser.add_argument('--uid', type=str, help='rgw user id for the user')
+    parser.add_argument('--bucket', type=str, help='bucket/container to get statistics from')
+    parser.add_argument('--s3host', type=str, help='rgw url',
+                        default = os.getenv('S3_HOSTNAME'))
+    parser.add_argument('--access', type=str,
+                        help='rgw access key (defaults to $S3_ACCESS_KEY)',
+                        default = os.getenv('S3_ACCESS_KEY_ID'))
+    parser.add_argument('--secret', type=str,
+                        help='rgw secret key (defaults to $S3_SECRET_KEY)',
+                        default = os.getenv('S3_SECRET_ACCESS_KEY'))
+
+
+    args = parser.parse_args()
+
+    admin = RGWAdminClient(args.s3host, args.access, args.secret)
+
     pp = pprint.PrettyPrinter()
+    print("user")
+    pp.pprint(admin.get_user(args.uid))
 
-    pp.pprint(stats)
-    pp.pprint(stats['buckets'])
-    pp.pprint(admin.get_usage("admin"))
+    print("\nbucket stats")
+    pp.pprint(admin.get_bucket(args.uid, args.bucket))
