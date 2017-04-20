@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sudo radosgw-admin user create --uid admin --display-name admin
+sudo radosgw-admin user create --uid admin --display-name admin --access-key=access --secret=secret
 sudo radosgw-admin caps add --uid=admin --caps="users=*"
 sudo radosgw-admin caps add --uid=admin --caps="buckets=*"
 sudo radosgw-admin caps add --uid=admin --caps="metadata=*"
